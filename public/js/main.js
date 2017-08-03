@@ -54,7 +54,7 @@ window.addEventListener('load', function(){
   for(let i = 0, length = selection.length; i < length; i++){
     let select_icon = selection[i].getElementsByClassName('select-icon')[0]
     let select_ul = wrapper[i].getElementsByClassName('options')[0]
-    // selection display
+    // selection display control
     selection[i].addEventListener('click', () => {
       if (!select_ul.style.display || select_ul.style.display === 'none'){
         allSelectionHidden()
@@ -135,7 +135,7 @@ function addSomeClickEvents(wrapper){
       select_icon.innerHTML = 'v'
     }, false)
     // next wrapper display block
-    li.addEventListener('click', (e) => {
+    li.addEventListener('click', () => {
       if (wrapper.nextElementSibling) {
         let next_wrapper = wrapper.nextElementSibling
         next_wrapper.style.display = 'block'
@@ -147,10 +147,6 @@ function addSomeClickEvents(wrapper){
             next_icon.innerHTML = '^'
           }
       }
-    })
-    // change query
-    li.addEventListener('click', (e) => {
-      queryChange(e.target.innerHTML)
     })
     // change items list
     li.addEventListener('click', (e) => {
@@ -171,6 +167,10 @@ function addSomeClickEvents(wrapper){
       }
       console.log(query)
       ajaxQuery(query)
+    })
+    // change query
+    li.addEventListener('click', (e) => {
+      queryChange(e.target.innerHTML)
     })
   }
 }
@@ -209,15 +209,51 @@ function queryChange(text){
       console.log(`${text} , ${flag} ERROR!`)
   }
 }
-// ajax send query
+// ajax send query post
+// function ajaxQuery(query){
+//   if (!compareTwoObject(query, prev_query)){
+//     let xmlhttp = new XMLHttpRequest()
+//     // clone query to prev_query
+//     prev_query = Object.assign({}, query)
+//
+//     const site = '/iphone/query'
+//
+//     xmlhttp.open('post', site, true)
+//     xmlhttp.setRequestHeader("Content-Type", "application/json")
+//     xmlhttp.send(JSON.stringify(query))
+//   }else{
+//     console.log('query equal')
+//   }
+// }
+// ajax send query get
+// @ like query?iPhone=iPhone5&color=白色&malfunction=屏幕&option=外屏损坏&method=上门快修
+// function ajaxQuery(query){
+//   if (!compareTwoObject(query, prev_query)){
+//     let xmlhttp = new XMLHttpRequest()
+//     let str = queryToString(query, '=', '&')
+//     console.log(str)
+//     // clone query to prev_query
+//     prev_query = Object.assign({}, query)
+//
+//     const site = '/iphone/query' + '?' + str
+//
+//     xmlhttp.open('get', site, true)
+//
+//     xmlhttp.send(null)
+//   }else{
+//     console.log('query equal')
+//   }
+// }
+// @ like query/iPhone/iPhone5/color/白色/malfunction/屏幕/option/外屏损坏/method/上门快修
 function ajaxQuery(query){
   if (!compareTwoObject(query, prev_query)){
     let xmlhttp = new XMLHttpRequest()
-    let str = queryToString(query)
+    let str = queryToString(query, '/', '/')
+    console.log(str)
     // clone query to prev_query
     prev_query = Object.assign({}, query)
 
-    const site = '/iphone/query' + '?' + str
+    const site = '/iphone/query' + '/' + str
 
     xmlhttp.open('get', site, true)
 
@@ -226,15 +262,16 @@ function ajaxQuery(query){
     console.log('query equal')
   }
 }
+
 // query change to string
-function queryToString(queryObj){
+function queryToString(queryObj, sym1, sym2){
   let arr = []
   let i = 0
   for (key in queryObj){
-    arr[i] = `${key}=${queryObj[key]}`
+    arr[i] = key + sym1 + queryObj[key]
     i++
   }
-  return arr.join('&')
+  return arr.join(sym2)
 }
 
 // compare two Object

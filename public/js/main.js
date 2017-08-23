@@ -57,7 +57,6 @@ window.addEventListener('load', function(){
         query.method = main_body.getElementsByClassName('method-hook')[0].innerHTML
         console.log(query)
         let price = ajaxQuery(query)
-        console.log(price)
         // change text
         ;(function changeText() {
           payPage.getElementsByClassName('type-hook')[0].innerHTML = query.type

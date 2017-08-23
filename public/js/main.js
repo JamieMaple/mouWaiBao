@@ -1,14 +1,16 @@
-// store data
-var appData, iPhoneModels, malfunction, methods
-// init and rember the query
-var query = { iPhone: '', color: '', malfunction: '', option: '', method: '' }
-var prev_query = Object.assign({}, query)
+let appData
+let query = {
+  type: '',
+  malfunction: '',
+  method: ''
+}
 // status rember
-var flag = 0
+let flag = 0
 
 window.addEventListener('load', function(){
   // get the basic dom
-  let wrapper = document.getElementsByClassName('selection-wrapper')
+  let main_body = document.getElementsByClassName('body-main')[0]
+  let wrapper = main_body.getElementsByClassName('selection-wrapper')
   // init show
   wrapper[0].getElementsByClassName("options")[0].style.display = 'block'
   // get ajax data
@@ -17,40 +19,67 @@ window.addEventListener('load', function(){
   xmlhttp.open('get', site, true)
   xmlhttp.onreadystatechange = function() {
     if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+      let iPhoneModels = []
       appData = JSON.parse(this.responseText)
-      iPhoneModels = appData.iPhone
-      malfunction = appData.malfunction
-      methods = appData.methods
-      let arrModels  = Object.keys(iPhoneModels)
-      let arrMalfunction = Object.keys(malfunction)
+      // defaultData
+      
+      appData.forEach( (val) => iPhoneModels.push(val.type) )
 
       let defaultData = [
         iPhoneModels,                                      // models
-        iPhoneModels[arrModels[0]].color,  // model-color
-        malfunction,                                       // malfunction
-        malfunction[arrMalfunction[0]].option,   // malfunction-option
-        methods
+        appData[0].color,                                  // model-color
+        appData[0].malfunction,                            // malfunction
+        appData[0].methods
       ]
+      // default set
+      query = {
+        type: iPhoneModels[0],
+        malfunction: appData[0].malfunction[0],
+        method: appData[0].methods[0]
+      }
+
       // init page
       for (let i = 0, length = defaultData.length; i < length; i++){
         // defaultChangeFlag
         flag = i
         createOrChangeItems(defaultData[i], wrapper[i])
       }
-      // defaultQuey
-      ajaxQuery(query)
-      // clone query to prev_query
-      prev_query = Object.assign({}, query)
-
       // reset flag
       flag = 0
+
+      let payPage = document.getElementsByClassName('pay-page')[0]
+      let nextPage_button = document.getElementsByClassName('pay')[0].getElementsByClassName('next')[0]
+      let prevPage_buttons = payPage.getElementsByClassName('prev-page')
+      // nextPage
+      nextPage_button.addEventListener('click', function() {
+        let color = main_body.getElementsByClassName('color-hook')[0].innerHTML
+        query.type = main_body.getElementsByClassName('type-hook')[0].innerHTML,
+        query.method = main_body.getElementsByClassName('method-hook')[0].innerHTML
+        console.log(query)
+        let price = ajaxQuery(query)
+        console.log(price)
+        // change text
+        ;(function changeText() {
+          payPage.getElementsByClassName('type-hook')[0].innerHTML = query.type
+          payPage.getElementsByClassName('color-hook')[0].innerHTML = color
+          payPage.getElementsByClassName('malfunction-hook')[0].innerHTML = query.malfunction
+          payPage.getElementsByClassName('method-hook')[0].innerHTML = query.method
+        })()
+        payPage.style.transform="translate3d(0, 0, 0)"
+      })
+      // prevPage
+      for(let i = 0, length = prevPage_buttons.length; i < length; i++) {
+        prevPage_buttons[i].addEventListener('click', function() {
+          payPage.style.transform="translate3d(100%, 0, 0)"
+        })
+      }
     }
   }
 
   xmlhttp.send()
 
   // addEventListener to each selection node
-  let selection = document.getElementsByClassName('selection')
+  let selection = main_body.getElementsByClassName('selection')
   for(let i = 0, length = selection.length; i < length; i++){
     let select_icon = selection[i].getElementsByClassName('select-icon')[0]
     let select_ul = wrapper[i].getElementsByClassName('options')[0]
@@ -59,33 +88,33 @@ window.addEventListener('load', function(){
       if (!select_ul.style.display || select_ul.style.display === 'none'){
         allSelectionHidden()
         select_ul.style.display = 'block'
-        select_icon.innerHTML = '^'
+        select_icon.innerHTML = '<i class="ion-android-arrow-dropup"></i>'
       }else{
         select_ul.style.display = 'none'
-        select_icon.innerHTML = 'v'
+        select_icon.innerHTML = '<i class="ion-android-arrow-dropdown"></i>'
       }
     }, false)
     // selection change flag
-    selection[i].addEventListener('click', () => {
-      flag = i
-    }, false)
+    ;(function(i){
+      selection[i].addEventListener('click', () => {
+        flag = i
+      }, false)
+    })(i)
   }
   // addEventListener to alert
-  let phoneDiv = document.getElementsByClassName('col-2')[0]
-  phoneDiv.addEventListener('click', () => {
-    alert('123')
-  })
+  // let phoneDiv = document.getElementsByClassName('col-2')[0]
+  // phoneDiv.addEventListener('click', () => {
+
+  // })
 }, false)
 
-// create list-items of options , first parameter only allow Array or Object
+// create list-items of options , first parameter only allow Array
 function createOrChangeItems(data, wrapper){
   let option = wrapper.getElementsByClassName('options')[0]
-  if (!Array.isArray(data)){
-    data = Object.keys(data)
-  }
+
   let s = ''
   for(let i = 0, items_length = data.length; i < items_length; i++){
-    s += `<li class="li-hook"><a class="text-hook" href="#">${data[i]}</a></li>`
+    s += `<li class="li-hook"><a class="text-hook" href="javascript:;">${data[i]}</a></li>`
   }
 
   option.innerHTML = s
@@ -102,8 +131,6 @@ function defaultAdd(wrapper){
 
   option.classList.add('active')
   choose.innerHTML = TEXT
-  // change query
-  queryChange(TEXT)
 }
 
 function addSomeClickEvents(wrapper){
@@ -117,61 +144,64 @@ function addSomeClickEvents(wrapper){
   // addEventListener to each li in li_objs of selection node
   for(let i = 0, li_length = li_objs.length; i < li_length; i++){
     let li = li_objs[i]
-    // this wrapper text change
-    li.addEventListener('click', (e) => {
-      const TEXT = e.target.innerHTML
-      choose.innerHTML = TEXT
-    }, false)
-    // this wrapper display
-    li.addEventListener('click', () => {
-      let prev = select_ul.getElementsByClassName('active')[0]
-      if(!prev){
-        li.classList.add('active')
-      }else{
-        prev.classList.remove('active')
-        li.classList.add('active')
-      }
-      select_ul.style.display = 'none'
-      select_icon.innerHTML = 'v'
-    }, false)
-    // next wrapper display block
-    li.addEventListener('click', () => {
-      if (wrapper.nextElementSibling) {
-        let next_wrapper = wrapper.nextElementSibling
-        next_wrapper.style.display = 'block'
-        // models and malfunction next options
-          let next_ul = next_wrapper.getElementsByClassName('options')[0]
-          let next_icon = next_wrapper.getElementsByClassName('select-icon')[0]
-          if (!next_ul.style.display || next_ul.style.display === 'none'){
-            next_ul.style.display = 'block'
-            next_icon.innerHTML = '^'
+    // active click
+    if (flag !== 2) {
+      // add active class
+      li.addEventListener('click', function() {
+        for(let ii = 0, length = li_objs.length; ii < length; ii++){
+          li_objs[ii].className = 'li-hook'
+        }
+        this.classList.add('active')
+      })
+      // this wrapper text change
+      li.addEventListener('click', (e) => {
+        const TEXT = e.target.innerHTML
+        choose.innerHTML = TEXT
+      }, false)
+    } else if (flag === 2) {
+      // click active
+      let active_lis = select_ul.getElementsByClassName('active')
+      li.addEventListener('click', function() {
+        if (this.classList.contains('active')) {
+          if (active_lis.length === 1){
+            return
           }
-      }
-    })
-    // change items list
-    li.addEventListener('click', (e) => {
-      if(flag === 0 || flag === 2){
+          this.classList.remove('active')
+        } else {
+          this.classList.add('active')
+        }
+      })
+      li.addEventListener('click', function() {
+        let malfunctions = []
+        for (let ii = 0, length = active_lis.length; ii < length; ii++) {
+          malfunctions.push(active_lis[ii].getElementsByTagName('a')[0].innerHTML)
+        }
+        query.malfunction = malfunctions.toString()
+        if (malfunctions.length === 1) {
+          choose.innerHTML = query.malfunction
+        } else {
+          choose.innerHTML = query.malfunction.substr(0, 3)+'...'
+        }
+      })
+    }
+    // click change next
+    if (flag === 0) {
+      li.addEventListener('click', (e) => {
         let next_wrapper = wrapper.nextElementSibling
         let text = e.target.innerHTML
         var data
 
-        if(flag === 0){
-          data = iPhoneModels[text].color
-        }else{
-          data = malfunction[text].option
+        if (flag !== 0) {
+          return
         }
-        flag += 1
-        createOrChangeItems(data, next_wrapper, flag)
-      }else{
-        flag += 1
-      }
-      console.log(query)
-      ajaxQuery(query)
-    })
-    // change query
-    li.addEventListener('click', (e) => {
-      queryChange(e.target.innerHTML)
-    })
+        appData.forEach((val, key) => {
+          if (text === val.type) {
+            data = val.color
+          }
+        })
+        createOrChangeItems(data, next_wrapper)
+      })
+    }
   }
 }
 
@@ -184,47 +214,29 @@ function allSelectionHidden(){
     val.style.display = 'none'
   })
   allSelectIcon.forEach((val) => {
-    val.innerHTML = "v"
+    val.innerHTML = '<i class="ion-android-arrow-dropdown"></i>'
   })
 }
-
-function queryChange(text){
-  switch (flag){
-    case 0:
-      query.iPhone=text
-      break
-    case 1:
-      query.color=text
-      break
-    case 2:
-      query.malfunction=text
-      break
-    case 3:
-      query.option=text
-      break
-    case 4:
-      query.method=text
-      break
-    default:
-      console.log(`${text} , ${flag} ERROR!`)
-  }
-}
 // ajax send query post
-// function ajaxQuery(query){
-//   if (!compareTwoObject(query, prev_query)){
-//     let xmlhttp = new XMLHttpRequest()
-//     // clone query to prev_query
-//     prev_query = Object.assign({}, query)
-//
-//     const site = '/iphone/query'
-//
-//     xmlhttp.open('post', site, true)
-//     xmlhttp.setRequestHeader("Content-Type", "application/json")
-//     xmlhttp.send(JSON.stringify(query))
-//   }else{
-//     console.log('query equal')
-//   }
-// }
+function ajaxQuery(query){
+    let xmlhttp = new XMLHttpRequest()
+
+    const site = '/iphone/query'
+    query = queryToString(query)
+    xmlhttp.open('post', site, true)
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState === 4) {
+        changePrice(JSON.parse(this.responseText))
+      }
+    }
+    xmlhttp.send(query)
+}
+function changePrice(data) {
+  console.log(data)
+  document.getElementsByClassName('pay-page')[0]
+    .getElementsByClassName('price-hook')[0].innerHTML = '￥'+data.price.toFixed(2)
+}
 // ajax send query get
 // @ like query?iPhone=iPhone5&color=白色&malfunction=屏幕&option=外屏损坏&method=上门快修
 // function ajaxQuery(query){
@@ -245,42 +257,29 @@ function queryChange(text){
 //   }
 // }
 // @ like query/iPhone/iPhone5/color/白色/malfunction/屏幕/option/外屏损坏/method/上门快修
-function ajaxQuery(query){
-  if (!compareTwoObject(query, prev_query)){
-    let xmlhttp = new XMLHttpRequest()
-    let str = queryToString(query, '/', '/')
-    console.log(str)
-    // clone query to prev_query
-    prev_query = Object.assign({}, query)
-
-    const site = '/iphone/query' + '/' + str
-
-    xmlhttp.open('get', site, true)
-
-    xmlhttp.send(null)
-  }else{
-    console.log('query equal')
-  }
-}
+// function ajaxQuery(query){
+//   if (!compareTwoObject(query, prev_query)){
+//     let xmlhttp = new XMLHttpRequest()
+//     let str = queryToString(query, '/', '/')
+//     // clone query to prev_query
+//     prev_query = Object.assign({}, query)
+//     const site = '/iphone/query' + '/' + str
+//     xmlhttp.open('get', site, true)
+//     xmlhttp.send(null)
+//   }else{
+//     console.log('query equal')
+//   }
+// }
 
 // query change to string
 function queryToString(queryObj, sym1, sym2){
+  sym1 = sym1 || '='
+  sym2 = sym2 || '&'
   let arr = []
   let i = 0
   for (key in queryObj){
-    arr[i] = key + sym1 + queryObj[key]
+    arr[i] = encodeURIComponent(key) + sym1 + encodeURIComponent(queryObj[key])
     i++
   }
   return arr.join(sym2)
-}
-
-// compare two Object
-function compareTwoObject(objA, objB){
-  let strA = JSON.stringify(objA)
-  let strB = JSON.stringify(objB)
-  if (strA === strB){
-    return true
-  }else{
-    return false
-  }
 }

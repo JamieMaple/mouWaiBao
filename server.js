@@ -27,7 +27,7 @@ app.get('/iphone/query/iPhone/:iPhone/color/:color/malfunction/:malfunction/opti
 // post
 app.post('/iphone/query', (req, res) => {
   console.log(req.body)
-  res.send(req.body)
+  res.send({price: 200})
 })
 
 const APP_PORT = 3000

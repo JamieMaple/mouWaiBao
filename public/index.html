@@ -4,13 +4,52 @@
 	<title>test</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-	<link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/ionicons.css">
 	<script src="./js/main.js"></script>
 </head>
 <body>
 	<div class="wrapper">
+    <div class="pay-page">
+      <div class="pay-title">
+        <a class="prev-page" href="javascript:;"><i class="ion-chevron-left"></i></a>
+        <h1 class="title">三个工匠维修</h1>
+      </div>
+      <div class="pay-wrapper">
+        <div class="text-wrapper">
+          <div class="price selection">
+            <span class="text-hook">预估价格</span>
+            <span class="text-container price-hook"></span>
+          </div>
+          <div class="selection">
+            <span class="text-hook type">型号</span>
+            <span class="text-container type-hook"></span>
+          </div>
+          <div class="selection">
+            <span class="text-hook color">颜色</span>
+            <span class="text-container color-hook"></span>
+          </div>
+          <div class="selection">
+            <span class="text-hook malfunction">故障类型</span>
+            <span class="text-container malfunction-hook"></span>
+            <div class="clearfix"></div>
+          </div>
+          <div class="selection">
+            <span class="text-hook method">维修方式</span>
+            <span class="text-container method-hook"></span>
+          </div>
+        </div>  
+        <a class="contact text-wrapper" href="tel: 123456">
+          <span class="contact-text">联系工匠</span>
+          <span class="contact-icon"><i class="ion-ios-arrow-forward"></i></span>
+        </a>
+        <div class="buttons">
+          <a class="prev-page" href="javascript:;">返回上一页</a>
+        </div>
+      </div>
+    </div>
 		<div class="header">
-			<a class="back" href="#"><span class="back_icon"><</span>返回</a>
+			<a class="back" href="javascript:;"><span class="back_icon"><i class="ion-android-arrow-back"></i></span></a>
 			<h1 class="title">iPhone维修</h1>
 		</div>
 		<div class="body">
@@ -22,8 +61,8 @@
 					<div class="selection">
 						<span class="select">选择型号</span>
 						<span class="selected">
-							<span class="choose"></span>
-							<span class="select-icon">^</span>
+							<span class="choose type-hook"></span>
+							<span class="select-icon"><i class="ion-android-arrow-dropup"></i></span>
 						</span>
 					</div>
 					<ul class="options">
@@ -33,19 +72,8 @@
 					<div class="selection">
 						<span class="select">选择颜色</span>
 						<span class="selected">
-							<span class="choose"></span>
-							<span class="select-icon">v</span>
-						</span>
-					</div>
-					<ul class="options">
-					</ul>
-				</div>
-				<div class="selection-wrapper">
-					<div class="selection">
-						<span class="select">故障类型</span>
-						<span class="selected">
-							<span class="choose"></span>
-							<span class="select-icon">v</span>
+							<span class="choose color-hook"></span>
+							<span class="select-icon"><i class="ion-android-arrow-dropdown"></i></span>
 						</span>
 					</div>
 					<ul class="options">
@@ -55,8 +83,8 @@
 					<div class="selection">
 						<span class="select">选择故障</span>
 						<span class="selected">
-							<span class="choose"></span>
-							<span class="select-icon">v</span>
+							<span class="choose malfunction-hook"></span>
+							<span class="select-icon"><i class="ion-android-arrow-dropdown"></i></span>
 						</span>
 					</div>
 					<ul class="options">
@@ -66,28 +94,25 @@
 					<div class="selection">
 						<span class="select">维修方式</span>
 						<span class="selected">
-							<span class="choose"></span>
-							<span class="select-icon">v</span>
+							<span class="choose method-hook"></span>
+							<span class="select-icon"><i class="ion-android-arrow-dropdown"></i></span>
 						</span>
 					</div>
 					<ul class="options">
 					</ul>
 				</div>
 			</div>
-			<!-- <div class="body-details">
-				<div class="details-wrapper">
-					<h3 class="title">其他说明</h3>
-					<textarea class="details" name="details" placeholder="您可以详细描述手机故障或其他要求"></textarea>
-				</div>
-			</div> -->
 		</div>
 		<div class="pay">
 			<div class="pay-wrapper">
-				<div class="col-1">应付金额：<span class="price">￥0</span></div>
-				<div class="col-2"><i>-</i><a href="#">呼叫客服</a></div>
-				<div class="col-3"><a href="#">下一步</a></div>
+        <div class="col-1 green-background">
+          <a class="button" href="tel:123456">联系客服</a>
+        </div>
+        <div class="col-1 red-background">
+          <a class="next button" href="javascript:;">下一步</a>
+        </div>
 			</div>
-		</div>
+    </div>
 	</div>
 </body>
 </html>

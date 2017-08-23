@@ -1,6 +1,8 @@
 // body.less
 @import './common.less';
-
+@text-font: 15px;
+@price-color: #000;
+@text-color: lightgrey;
 .wrapper{
   position: absolute;
   top: 0;
@@ -8,6 +10,7 @@
   right: 0;
   min-height: 100%;
   background: #F4F4F4;
+  overflow: hidden;
   .body{
 		padding: 50px 0;
     // body img
@@ -21,7 +24,7 @@
     // main part
     .body-main{
       padding-bottom: 10px;
-      .selection-wrapper{
+      .selection-wrapper {
         display: block;
         .selection{
           position: relative;
@@ -56,8 +59,6 @@
           }
         }
       }
-
-      // group-1 and group-2 common
       .options{
         display: none;
         width: 100%;
@@ -131,5 +132,109 @@
 			}
 			}
 		}
-	}
+  }
+  .pay-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    z-index: 20;
+    background: #F4F4F4;
+    transform: translate3d(100%, 0, 0);
+    transition: all .4s;
+    .pay-title {
+      height: 50px;
+      background: @bg-color;
+      color: @font-color;
+      font-family: 'Microsoft YaHei',Monaco;
+      .title {
+        line-height: 50px;
+        font-size: 24px;
+      }
+      .prev-page {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 16px;
+        line-height: 18px;
+        font-size: 18px;
+        color: @font-color;
+      }
+      .title {
+        text-align: center
+      }
+    }
+    .pay-wrapper {
+      .text-wrapper {
+        margin: 20px 0;
+        padding: 5px 5% 5px 5%;
+        background: #fff;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        font-size: 0;
+        .selection {
+          margin: 10px auto;
+          background: #fff;
+          font-size: 0;
+          ::after {
+            content: '';
+            clear: both;
+          }
+          .text-container, .text-hook {
+            line-height: 20px;
+            font-size: @text-font;
+          }
+          .text-hook {
+            color: @text-color;
+          }
+          .text-container {
+            float: right;
+            color: @price-color;
+          }
+          .clearfix {
+            clear: both;
+          }
+        }
+        .price.selection {
+          padding: 15px 0;
+          margin: 0;
+          margin-bottom: 15px;
+          border-bottom: 1px solid @text-color;
+          .text-container {
+            font-size: 20px;
+            color: @price-color;
+          }
+        }
+      }
+      .contact {
+        display: block;
+        padding: 10px 5%;
+        span {
+          color: @price-color;
+          font-size: 18px;
+        }
+        .contact-text {
+          color: @price-color;
+        }
+        .contact-icon {
+          float: right;
+        }
+      }
+      .buttons {
+        text-align: center;
+        .prev-page {
+          display: inline-block;
+          width: 90%;
+          padding: 10px;
+          border-radius: 5px;
+          text-align: center;
+          font-size: 18px;
+          background: #44b549;
+          color: #fff;
+        }
+      }
+    }
+  }
+
 }

@@ -15,8 +15,8 @@ window.addEventListener('load', function(){
   wrapper[0].getElementsByClassName("options")[0].style.display = 'block'
   // get ajax data
   let xmlhttp = new XMLHttpRequest()
-  let site = '/portal/phone/modex'
-  xmlhttp.open('post', site, true)
+  let site = '/iphone/api'
+  xmlhttp.open('get', site, true)
   xmlhttp.onreadystatechange = function() {
     if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
       let iPhoneModels = []
@@ -56,7 +56,7 @@ window.addEventListener('load', function(){
         query.type = main_body.getElementsByClassName('type-hook')[0].innerHTML,
         query.method = main_body.getElementsByClassName('method-hook')[0].innerHTML
         console.log(query)
-        ajaxQuery({site: '/portal/phone/price', query, type: 'post', callback: changePrice})
+        let price = ajaxQuery(query)
         // change text
         ;(function changeText() {
           payPage.getElementsByClassName('type-hook')[0].innerHTML = query.type
@@ -100,8 +100,11 @@ window.addEventListener('load', function(){
       }, false)
     })(i)
   }
-  // change contact num
-  ajaxQuery({ site: '/portal/phone/num', type: 'post', callback: changeNum})
+  // addEventListener to alert
+  // let phoneDiv = document.getElementsByClassName('col-2')[0]
+  // phoneDiv.addEventListener('click', () => {
+
+  // })
 }, false)
 
 // create list-items of options , first parameter only allow Array
@@ -214,24 +217,16 @@ function allSelectionHidden(){
   })
 }
 // ajax send query post
-// site, type, query, callback
-function ajaxQuery(dataObj){
+function ajaxQuery(query){
     let xmlhttp = new XMLHttpRequest()
 
-    const site = dataObj.site || ''
-    const type = dataObj.type || 'post'
-    let query = dataObj.query || null
-    let callback = dataObj.callback || function(){}
-
-    if (query) {
-      query = queryToString(query)
-    }
-    xmlhttp.open(type, site, true)
+    const site = '/iphone/query'
+    query = queryToString(query)
+    xmlhttp.open('post', site, true)
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
     xmlhttp.onreadystatechange = function() {
       if (this.readyState === 4) {
-        let data = JSON.parse(this.responseText)
-        callback(data)
+        changePrice(JSON.parse(this.responseText))
       }
     }
     xmlhttp.send(query)
@@ -241,17 +236,44 @@ function changePrice(data) {
   document.getElementsByClassName('pay-page')[0]
     .getElementsByClassName('price-hook')[0].innerHTML = '￥'+data.price.toFixed(2)
 }
-function changeNum(data) {
-  console.log(data)
-  
-  var contact = document.getElementsByClassName('contact-tel')
-  for (let i = 0, length = contact.length; i < length; i++) {
-    contact[i].href='tel:'+data.num
-  }
-}
+// ajax send query get
+// @ like query?iPhone=iPhone5&color=白色&malfunction=屏幕&option=外屏损坏&method=上门快修
+// function ajaxQuery(query){
+//   if (!compareTwoObject(query, prev_query)){
+//     let xmlhttp = new XMLHttpRequest()
+//     let str = queryToString(query, '=', '&')
+//     console.log(str)
+//     // clone query to prev_query
+//     prev_query = Object.assign({}, query)
+//
+//     const site = '/iphone/query' + '?' + str
+//
+//     xmlhttp.open('get', site, true)
+//
+//     xmlhttp.send(null)
+//   }else{
+//     console.log('query equal')
+//   }
+// }
+// @ like query/iPhone/iPhone5/color/白色/malfunction/屏幕/option/外屏损坏/method/上门快修
+// function ajaxQuery(query){
+//   if (!compareTwoObject(query, prev_query)){
+//     let xmlhttp = new XMLHttpRequest()
+//     let str = queryToString(query, '/', '/')
+//     // clone query to prev_query
+//     prev_query = Object.assign({}, query)
+//     const site = '/iphone/query' + '/' + str
+//     xmlhttp.open('get', site, true)
+//     xmlhttp.send(null)
+//   }else{
+//     console.log('query equal')
+//   }
+// }
 
 // query change to string
-function queryToString(queryObj, sym1 = '=', sym2 = '&'){
+function queryToString(queryObj, sym1, sym2){
+  sym1 = sym1 || '='
+  sym2 = sym2 || '&'
   let arr = []
   let i = 0
   for (key in queryObj){

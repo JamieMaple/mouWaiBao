@@ -182,6 +182,8 @@ function addSomeClickEvents(wrapper){
     const TYPE = 1
     const COLOR = 2
     const MALFUNCTION = 3
+    const METHODS = 4
+    console.log('option', flag)
     if (flag !== MALFUNCTION) {
       // add active class
       li.addEventListener('click', function() {
@@ -227,13 +229,22 @@ function addSomeClickEvents(wrapper){
     let next_wrapper = wrapper.nextElementSibling
 
     li.addEventListener('click', function(e) {
+      console.log(flag)
       switch (flag) {
         case TYPE: 
           for ( key in  appData ) {
             if (e.target.innerHTML === appData[key].type) {
+              // color
+              flag = COLOR
               createOrChangeItems(appData[key].color, next_wrapper)
+              // malfunction 
+              flag = MALFUNCTION
               createOrChangeItems(appData[key].malfunction, next_wrapper.nextElementSibling)
+              // methods
+              flag = METHODS
               createOrChangeItems(appData[key].methods, next_wrapper.nextElementSibling.nextElementSibling)
+              // reset to type
+              flag = TYPE
             }
           }     
       }

@@ -1,4 +1,37 @@
 @import './lesses/reset.less';
 @import './lesses/header.less';
-@import './lesses/body.less';
-@import './lesses/pay.less';
+
+.wrapper {
+  position: relative;
+  .body {
+    margin-top: 50px;
+    .title {
+      padding: 5px 0;
+      font-size: 20px;
+      text-align: center;
+      line-height: 50px;
+    }
+    .options {
+      padding: 0 15px;
+      font-size: 0;
+      & :nth-child(2n) {
+        margin-left: 2%;
+      }
+      .options-item {
+        display: inline-block;
+        width: 49%;
+        margin-bottom: 8px;
+        border: 1px solid #999;
+        border-radius: 5px;
+        a {
+          display: block;
+          padding: 17px 5px;
+          line-height: 20px;
+          font-size: 14px;
+          text-align: center;
+          color: #23527c;
+        }
+      }
+    }
+  }
+}

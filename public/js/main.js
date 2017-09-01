@@ -17,7 +17,13 @@ function ajaxQuery(dataObj){
   const type = dataObj.type || 'post'
   let query = dataObj.query || null
   let callback = dataObj.callback || function(){}
-  let async = dataObj.async || true
+  let async
+  if (dataObj.async === false) {
+    async = false
+  } else {
+    async = true
+  }
+  console.log(async)
 
   if (query) {
     query = queryToString(query)
@@ -75,11 +81,11 @@ window.addEventListener('load', function(){
   }
 
   // change brand
-  ajaxQuery( {site: '/portal/phone/brand', callback: changeBrand , async: false})
+  ajaxQuery( { site: '/portal/phone/brand', type: 'post', callback: changeBrand, async: false } )
   // change models
-  ajaxQuery( {site: '/portal/phone/modex', query: { brand: brand[0]}, callback: changeWrapperFromOneToFour })
+  ajaxQuery( { site: '/portal/phone/modex', type: 'post', query: { brand: brand[0] }, callback: changeWrapperFromOneToFour } )
   // change contact num
-  ajaxQuery({ site: '/portal/phone/num', type: 'post', callback: changeNum })
+  ajaxQuery( { site: '/portal/phone/num', type: 'post', callback: changeNum } )
 }, false)
 
 // change li 
@@ -274,7 +280,8 @@ function changeBrand(data){
     brands[i].addEventListener('click', (e) => {
       ajaxQuery( {site: '/portal/phone/modex', query: {brand: e.target.innerHTML}, callback: changeWrapperFromOneToFour})
     })
-  }
+  } 
+  console.log('brand')
 }
 function changePrice(data) {
   document.getElementsByClassName('pay-page')[0]

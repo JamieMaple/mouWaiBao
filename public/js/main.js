@@ -2,6 +2,7 @@ let brand = []
 let appData = []
 let query = {
   type: '',
+  color: '',
   malfunction: '',
   method: ''
 }
@@ -92,21 +93,18 @@ function changeWrapperFromOneToFour(data){
   // get the basic dom
   let main_body = document.getElementsByClassName('body-main')[0]
   let wrapper = main_body.getElementsByClassName('selection-wrapper')
-  let iPhoneModels = []
   appData = data
   // defaultData
-  
-  appData.forEach( (val) => iPhoneModels.push(val.type) )
 
   let defaultData = [
-    iPhoneModels,                                      // models
+    appData.map((val) => val.type),                                      // models
     appData[0].color,                                  // model-color
     appData[0].malfunction,                            // malfunction
     appData[0].methods
   ]
   // default set
   query = {
-    type: iPhoneModels[0],
+    type: appData.map((val) => val.type)[0],
     malfunction: appData[0].malfunction[0],
     method: appData[0].methods[0]
   }
@@ -125,7 +123,7 @@ function changeWrapperFromOneToFour(data){
   let prevPage_buttons = payPage.getElementsByClassName('prev-page')
   // nextPage
   nextPage_button.addEventListener('click', function() {
-    let color = main_body.getElementsByClassName('color-hook')[0].innerHTML
+    query.color = main_body.getElementsByClassName('color-hook')[0].innerHTML
     query.type = main_body.getElementsByClassName('type-hook')[0].innerHTML,
     query.method = main_body.getElementsByClassName('method-hook')[0].innerHTML
     console.log(query)
@@ -133,7 +131,7 @@ function changeWrapperFromOneToFour(data){
     // change text
     ;(function changeText() {
       payPage.getElementsByClassName('type-hook')[0].innerHTML = query.type
-      payPage.getElementsByClassName('color-hook')[0].innerHTML = color
+      payPage.getElementsByClassName('color-hook')[0].innerHTML = query.color
       payPage.getElementsByClassName('malfunction-hook')[0].innerHTML = query.malfunction
       payPage.getElementsByClassName('method-hook')[0].innerHTML = query.method
     })()

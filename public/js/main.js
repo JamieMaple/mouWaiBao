@@ -23,7 +23,6 @@ function ajaxQuery(dataObj){
   } else {
     async = true
   }
-  console.log(async)
 
   if (query) {
     query = queryToString(query)
